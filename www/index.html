@@ -1,0 +1,53 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Jellyfish Master</title>
+<meta name="theme-color" content="#0f766e">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" href="icon-192.png">
+<link rel="apple-touch-icon" href="icon-192.png">
+<style>
+:root{--bg:#f4f7f8;--surface:#fff;--s2:#eef3f4;--tx:#15262b;--mu:#5d6f75;--line:#d9e3e6;--pri:#0f766e;--pri-t:#fff;--ok:#15803d;--warn:#b45309;--bad:#c2410c;--r:14px}
+@media (prefers-color-scheme:dark){:root{--bg:#0f1719;--surface:#172226;--s2:#1d2b30;--tx:#e6eef0;--mu:#9bb0b6;--line:#2a3b40;--pri:#2dd4bf;--pri-t:#062a26;--ok:#4ade80;--warn:#fbbf24;--bad:#fb923c}}
+*{box-sizing:border-box}html,body{margin:0}body{background:var(--bg);color:var(--tx);font:16px/1.55 system-ui,-apple-system,"Segoe UI",Roboto,"Noto Sans JP",sans-serif;min-height:100vh}
+button,input,select,textarea{font:inherit;color:inherit}
+.wrap{max-width:460px;margin:0 auto;padding:28px 16px 40px}.wide{max-width:980px}
+.brand{display:flex;align-items:center;gap:12px;margin-bottom:18px}.brand img{width:52px;height:52px;border-radius:14px}.brand b{font-size:1.25rem}.brand small{display:block;color:var(--mu);font-size:.8rem}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:var(--r);padding:18px;margin-bottom:14px}
+h1{font-size:1.3rem;margin:0 0 6px}h2{font-size:1.1rem;margin:0 0 8px}p{margin:6px 0}.mu{color:var(--mu);font-size:.9rem}
+label{display:block;font-size:.85rem;font-weight:600;margin:12px 0 4px}
+input,select,textarea{width:100%;border:1px solid var(--line);background:var(--bg);border-radius:10px;padding:11px 12px}
+input:focus,select:focus,textarea:focus{outline:2px solid var(--pri);outline-offset:0;border-color:transparent}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:6px;border:1px solid var(--line);background:var(--surface);border-radius:10px;padding:9px 14px;cursor:pointer;min-height:42px}
+.btn.pri{background:var(--pri);color:var(--pri-t);border-color:var(--pri);font-weight:700}.btn.full{width:100%;margin-top:16px}
+.btn.bad{color:var(--bad);border-color:color-mix(in srgb,var(--bad) 45%,var(--line))}.btn.sm{min-height:34px;padding:5px 10px;font-size:.85rem}
+.btn:disabled{opacity:.55;cursor:default}
+.lnk{background:none;border:0;color:var(--pri);text-decoration:underline;cursor:pointer;padding:0}
+.row{display:flex;gap:8px;flex-wrap:wrap;align-items:center}.sp{flex:1}
+.msg{border-radius:10px;padding:10px 12px;margin:10px 0;font-size:.92rem}.msg.err{background:color-mix(in srgb,var(--bad) 13%,var(--surface));color:var(--bad)}.msg.ok{background:color-mix(in srgb,var(--ok) 13%,var(--surface));color:var(--ok)}.msg.info{background:var(--s2)}
+.big{font-size:3rem;text-align:center;margin:6px 0}
+.tabs{display:flex;gap:6px;flex-wrap:wrap;margin:10px 0 14px}.tabs button{border:1px solid var(--line);background:var(--surface);border-radius:999px;padding:6px 12px;cursor:pointer}.tabs button.on{background:var(--pri);color:var(--pri-t);border-color:var(--pri)}
+.acc{display:grid;gap:4px;border:1px solid var(--line);border-radius:12px;padding:12px;background:var(--surface);margin-bottom:10px}
+.acc-h{display:flex;gap:8px;align-items:baseline;flex-wrap:wrap}.acc-h b{font-size:1.02rem}.acc .mu{font-size:.82rem}
+.tag{display:inline-block;border-radius:999px;padding:1px 8px;font-size:.74rem;font-weight:700;border:1px solid var(--line)}
+.t-active{color:var(--ok);border-color:currentColor}.t-pending{color:var(--warn);border-color:currentColor}.t-disabled{color:var(--bad);border-color:currentColor}.t-admin{background:var(--pri);color:var(--pri-t);border-color:var(--pri)}
+.flags{display:flex;gap:6px;flex-wrap:wrap}.flag{font-size:.78rem;border-radius:8px;padding:2px 8px;background:var(--s2)}
+.grid4{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:8px;margin-bottom:14px}.stat{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:10px 12px}.stat b{display:block;font-size:1.4rem}.stat span{font-size:.8rem;color:var(--mu)}
+.log{font-size:.85rem;border-bottom:1px dashed var(--line);padding:6px 0}
+.ov{position:fixed;inset:0;background:rgba(0,0,0,.45);display:flex;align-items:flex-start;justify-content:center;overflow:auto;padding:16px;z-index:50}.ov .card{max-width:560px;width:100%;margin:auto 0}
+.bar{height:8px;border-radius:99px;background:var(--line);overflow:hidden}.bar i{display:block;height:100%;background:var(--pri);width:0;transition:width .2s}
+.sw{display:flex;align-items:center;gap:10px;margin:10px 0}.sw input{width:auto}
+table{width:100%;border-collapse:collapse;font-size:.88rem}td,th{border-bottom:1px solid var(--line);padding:6px 4px;text-align:left;vertical-align:top}
+.hidden{display:none!important}
+</style>
+</head>
+<body>
+<main id="app" class="wrap" aria-live="polite"><p class="mu">Memuat…</p></main>
+<script src="apk.js"></script><script src="config.js"></script>
+<script src="sb.js"></script>
+<script src="jm-core.js"></script>
+<script src="shell.js"></script>
+</body>
+</html>

@@ -1,0 +1,7 @@
+{
+  "appId": "com.jellyfishmaster.sensei",
+  "appName": "Jellyfish Master",
+  "webDir": "www",
+  "server": { "androidScheme": "https" },
+  "android": { "allowMixedContent": false, "adjustMarginsForEdgeToEdge": "auto" }
+}
