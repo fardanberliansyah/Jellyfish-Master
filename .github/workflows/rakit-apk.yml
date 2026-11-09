@@ -1,0 +1,77 @@
+name: Rakit APK
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+env:
+  # Alamat aplikasi web (Netlify). config.js diambil dari sini bila www/config.js belum diisi.
+  WEB_URL: https://jellyfish-master.netlify.app
+
+jobs:
+  apk:
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Cek konfigurasi
+        env:
+          KS: ${{ secrets.KEYSTORE_B64 }}
+          PASS: ${{ secrets.KEYSTORE_PASS }}
+        run: |
+          if grep -q "ISI-PROJECT-ANDA" www/config.js; then curl -fsSL "$WEB_URL/config.js" -o www/config.js || true; fi
+          if grep -q "ISI-PROJECT-ANDA" www/config.js || ! grep -q "supabase.co" www/config.js; then echo "::error::config.js tidak bisa diambil dari $WEB_URL. Salin config.js dari folder dist ke www/config.js."; exit 1; fi
+          sed -i 's/mock: true/mock: false/' www/config.js
+          if [ -z "$KS" ] || [ -z "$PASS" ]; then echo "::error::Secret KEYSTORE_B64 / KEYSTORE_PASS belum dibuat (Settings > Secrets and variables > Actions)."; exit 1; fi
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: 21
+
+      - name: Pasang Capacitor
+        run: npm install --no-audit --no-fund
+
+      - name: Nomor versi APK
+        run: echo "window.JM_NATIVE=true;window.JM_APK=${{ github.run_number }};" > www/apk.js
+
+      - name: Siapkan proyek Android
+        run: |
+          npx cap add android
+          bash tools/android-setup.sh ${{ github.run_number }}
+          npx cap sync android
+
+      - name: Rakit APK
+        working-directory: android
+        run: |
+          chmod +x gradlew
+          ./gradlew assembleRelease --no-daemon --stacktrace
+
+      - name: Tanda tangani APK
+        env:
+          KS: ${{ secrets.KEYSTORE_B64 }}
+          PASS: ${{ secrets.KEYSTORE_PASS }}
+        run: |
+          echo "$KS" | base64 -d > "$RUNNER_TEMP/jm.jks"
+          BT=$(ls -d "$ANDROID_HOME"/build-tools/* | sort -V | tail -1)
+          IN=$(find android/app/build/outputs/apk/release -name "*.apk" | head -1)
+          mkdir -p out
+          "$BT/zipalign" -p -f 4 "$IN" "$RUNNER_TEMP/aligned.apk"
+          "$BT/apksigner" sign --ks "$RUNNER_TEMP/jm.jks" --ks-pass env:PASS --ks-key-alias jm --key-pass env:PASS \
+            --out "out/Jellyfish-Master-v${{ github.run_number }}.apk" "$RUNNER_TEMP/aligned.apk"
+          "$BT/apksigner" verify --print-certs "out/Jellyfish-Master-v${{ github.run_number }}.apk" | head -3
+          rm -f "$RUNNER_TEMP/jm.jks"
+          ls -l out
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: Jellyfish-Master-APK-v${{ github.run_number }}
+          path: out/*.apk
+          retention-days: 90
