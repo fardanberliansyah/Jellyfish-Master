@@ -4,6 +4,7 @@ const ROOT=JM.ROOT,st=JM.st();
 /* 1. Cek cepat sebelum materi tampil */
 if(!JMSB.session()||st.status!="active"){location.replace(ROOT);return;}
 let locked=false;
+try{document.documentElement.style.touchAction="manipulation";}catch(e){}
 /* APK native: file audio "aud/…" diputar dari blob URL (tidak ada service worker) */
 if(JM.NATIVE){const map=u=>{if(typeof u!="string")return u;const k=u.replace(/^\.?\//,"");return JM.AURL[k]||u;};
  const d=Object.getOwnPropertyDescriptor(HTMLMediaElement.prototype,"src");

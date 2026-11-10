@@ -16,3 +16,7 @@ sed -i -E "s/versionCode [0-9]+/versionCode $N/; s/versionName \"[^\"]*\"/versio
 sed -i -E "s/targetSdkVersion = [0-9]+/targetSdkVersion = 34/" android/variables.gradle
 grep -nE "versionCode|versionName" android/app/build.gradle
 grep -n "targetSdkVersion" android/variables.gradle
+# MainActivity: perbaikan zoom/tampilan terbesar
+MA=$(find android/app/src/main/java -name MainActivity.java | head -1)
+cp res/MainActivity.java "$MA"
+echo "MainActivity: $MA"
